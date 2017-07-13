@@ -1,0 +1,159 @@
+//created on: Jul 7, 2017
+package rules
+
+import com.PortInformation.*;
+import java.util.ArrayList;
+
+
+rule "service"
+ruleflow-group "commonrules"
+    when
+        PortInfo:PortInformation(serviceValue==null)
+    then
+        PortInfo.setServiceValue("Frame/Native IP");
+        PortInfo.setServiceIsUpdatable(true);
+        PortInfo.setServiceIsRequired(true);
+end
+
+rule "serviceArea"
+ruleflow-group "commonrules"
+    when
+        PortInfo:PortInformation(serviceAreaValue==null)
+    then
+        PortInfo.setServiceAreaValue("National");
+        PortInfo.setServiceAreaIsUpdatable(true);
+        PortInfo.setServiceAreaIsRequired(true);
+end
+
+
+rule "Ethernet"
+ruleflow-group "commonrules"
+    when
+        PortInfo:PortInformation(ethernetValue==null)
+    then
+        PortInfo.setNativeIpValue("National");
+        PortInfo.setNativeIpIsUpdatable(true);
+        PortInfo.setNativeIPIsRequired(true);
+end
+
+rule "NativeIP"
+ruleflow-group "commonrules"
+    when
+        PortInfo:PortInformation(nativeIpValue==null)
+    then
+        PortInfo.setNativeIpValue("Not a Pos Port");
+        PortInfo.setNativeIpIsUpdatable(false);
+        PortInfo.setNativeIPIsRequired(false);
+end
+
+rule "Service Name"
+ruleflow-group "commonrules"
+when
+	PortInfo:PortInformation(serviceNameValue == null)
+	then 
+		PortInfo.setServiceNameValue("NB-IPVPN");
+		PortInfo.setServiceNameisUpdatable(false);
+		PortInfo.setServiceNameisRequired(false);
+end
+
+rule "PortAction"
+ruleflow-group "commonrules"
+when 
+	PortInfo:PortInformation(actionDropdownList==null)
+	then
+		ArrayList List = new ArrayList();
+		List.add("New");
+		List.add("Change Speed");
+		PortInfo.setActionDropdownList(List);	
+		PortInfo.setActionIsRequired(true);
+		end
+
+rule "PortSpeed"
+ruleflow-group "commonrules"
+when 
+	PortInfo:PortInformation(portSpeedDropdownList==null)
+	then
+		ArrayList List = new ArrayList();
+		List.add("200M");
+		List.add("1 Gig");
+		PortInfo.setPortSpeedDropdownList(List);	
+		PortInfo.setPortSpeedIsRequired(true);
+		PortInfo.setPortSpeedIsUpdatable(true);
+		end
+
+rule "PortBillingOptionEnable"
+ruleflow-group "commonrules"
+activation-group "PortBillingOption"
+when
+	PortInfo:PortInformation(portSpeedIsSelected == true || portBillingOptionSelectedValue == null)
+	
+	then
+		ArrayList List = new ArrayList();
+		List.add("None (Fixed Rate)");
+		List.add("Highcap Flex");
+		PortInfo.setPortBillingOptionDropdownList(List);	
+		PortInfo.setPortBillingOptionIsUpdatable(true);
+		PortInfo.setPortBillingOptionIsDisplayed(true);
+		end
+	
+rule "PortBillingOptionDisable"
+ruleflow-group "commonrules"
+activation-group "PortBillingOption"
+when
+	PortInfo:PortInformation(portSpeedIsSelected == false || portSpeedIsSelected == null && portBillingOptionSelectedValue != null)
+	
+	then
+		PortInfo.setPortBillingOptionDropdownList(null);	
+		PortInfo.setPortBillingOptionIsDisplayed(false);
+		end
+		
+		
+rule "AccessMethodType"
+ruleflow-group "commonrules"
+when 
+	PortInfo:PortInformation(accessMethodTypeDropdownList==null)
+then
+	ArrayList List = new ArrayList();
+		List.add("ESP Ethernet Dedicated");
+		List.add("ESP Ethernet Shared");
+		PortInfo.setAccessMethodTypeDropdownList(List);
+		PortInfo.setAccessMethodTypeIsUpdatable(true);
+		
+end
+
+rule "InterconnectType1"
+ruleflow-group "commonrules"
+activation-group "InterconnectType"
+when
+PortInfo:PortInformation(accessMethodTypeSelectedValue=="ESP Ethernet Dedicated")
+
+then
+ArrayList List = new ArrayList();
+		List.add("Provider GW Interconnect");
+		PortInfo.setInterconnectTypeDropdownList(List);
+		PortInfo.setInterconnectTypeIsUpdatable(true);
+end
+
+rule "InterconnectType2"
+ruleflow-group "commonrules"
+activation-group "InterconnectType"
+when
+PortInfo:PortInformation(accessMethodTypeSelectedValue=="ESP Ethernet Shared")
+
+then
+ArrayList List = new ArrayList();
+		List.add("Direct Connect");
+		PortInfo.setInterconnectTypeDropdownList(List);
+		PortInfo.setInterconnectTypeIsUpdatable(true);
+end
+
+rule "InterconnectType3"
+ruleflow-group "commonrules"
+activation-group "InterconnectType"
+when
+PortInfo:PortInformation(accessMethodTypeSelectedValue==null)
+
+then
+		PortInfo.setInterconnectTypeDropdownList(null);
+		PortInfo.setInterconnectTypeIsUpdatable(true);
+end

@@ -1,0 +1,17 @@
+//created on: Jul 7, 2017
+package rules
+
+import com.PortInformation.*;
+import java.util.ArrayList;
+import com.Properties.*;
+
+
+rule "NativeIP"
+    when
+        port:Port(NativeIP.value==null)
+        
+        
+    then
+        port.NativeIP.setValue("Not a Pos Port");
+end
+
