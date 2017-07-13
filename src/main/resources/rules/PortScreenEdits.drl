@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 
 rule "service"
-ruleflow-group "commonrules"
+
     when
         PortInfo:PortInformation(serviceValue==null)
     then
@@ -26,32 +26,150 @@ ruleflow-group "commonrules"
 end
 
 
-rule "Ethernet"
+rule "Ethernet1"
 ruleflow-group "commonrules"
+activation-group "Ethernet"
     when
-        PortInfo:PortInformation(ethernetValue==null)
+        PortInfo:PortInformation( serviceValue == "Ethernet")
     then
-        PortInfo.setEthernetValue("National");
-        PortInfo.setNativeIpIsUpdatable(true);
-        PortInfo.setNativeIPIsRequired(true);
+        PortInfo.setEthernetValue(true);
+        PortInfo.setEthernetIsUpdatable(true);
+        PortInfo.setEthernetIsRequired(true);
+        PortInfo.setEthernetIsDisplayed(true);
 end
 
-rule "NativeIP"
+rule "Ethernet2"
 ruleflow-group "commonrules"
+activation-group "Ethernet"
     when
-        PortInfo:PortInformation(nativeIpValue==null)
+        PortInfo:PortInformation( serviceValue != "Ethernet")
+    then
+        PortInfo.setEthernetValue(null);
+        PortInfo.setEthernetIsUpdatable(false);
+        PortInfo.setEthernetIsRequired(false);
+        PortInfo.setEthernetIsDisplayed(false);
+end
+
+rule "ServiceActivity1"
+ruleflow-group "commonrules"
+activation-group "ServiceActivity"
+    when
+        PortInfo:PortInformation(serviceValue == "Ethernet" && ethernetValue == true)
+    then
+    ArrayList List = new ArrayList();
+		List.add("AVPN");
+		List.add("OPTEWAN");
+        PortInfo.setServiceActivityDropdownList(List);
+        PortInfo.setServiceActivityIsUpdatable(true);
+        PortInfo.setServiceActivityIsRequired(true);
+        PortInfo.setServiceActivityIsDisplayed(true);
+end
+
+rule "ServiceActivity2"
+ruleflow-group "commonrules"
+activation-group "ServiceActivity"
+    when
+        PortInfo:PortInformation(serviceValue != "Ethernet")
+    then
+    
+        PortInfo.setServiceActivityDropdownList(null);
+        PortInfo.setServiceActivityIsUpdatable(false);
+        PortInfo.setServiceActivityIsRequired(false);
+        PortInfo.setServiceActivityIsDisplayed(false);
+end
+
+
+rule "AVPNManagementOption1"
+ruleflow-group "commonrules"
+activation-group "AVPNManagementOption"
+    when
+        PortInfo:PortInformation( serviceActivitySelectedValue == "AVPN")
+    then
+    ArrayList List = new ArrayList();
+		List.add("Transport Only");
+		List.add("Managed CSU");
+		List.add("Managed Router");
+        PortInfo.setAvpnManagementDropdownList(List);
+        PortInfo.setAvpnManagementIsUpdatable(true);
+        PortInfo.setAvpnManagementIsRequired(true);
+        PortInfo.setAvpnManagementIsDisplayed(true);
+end
+rule "AVPNManagementOption2"
+ruleflow-group "commonrules"
+activation-group "AVPNManagementOption"
+    when
+        PortInfo:PortInformation( serviceActivitySelectedValue == null)
+    then
+    
+        PortInfo.setAvpnManagementDropdownList(null);
+        PortInfo.setAvpnManagementIsUpdatable(false);
+        PortInfo.setAvpnManagementIsRequired(false);
+        PortInfo.setAvpnManagementIsDisplayed(false);
+end
+
+
+rule "NativeIP1"
+ruleflow-group "commonrules"
+activation-group "NativeIP"
+    when
+        PortInfo:PortInformation(serviceValue =="Ethernet" && ethernetValue==true && serviceAreaValue=="National" && nativeIpValue==null)
     then
         PortInfo.setNativeIpValue("Not a Pos Port");
         PortInfo.setNativeIpIsUpdatable(false);
         PortInfo.setNativeIPIsRequired(false);
 end
 
-rule "Service Name"
+rule "NativeIP2"
 ruleflow-group "commonrules"
+activation-group "NativeIP"
+    when
+        PortInfo:PortInformation(nativeIpValue==null)
+    then
+        PortInfo.setNativeIpValue(null);
+        PortInfo.setNativeIpIsUpdatable(false);
+        PortInfo.setNativeIPIsRequired(false);
+end
+
+
+rule "Service Name1"
+ruleflow-group "commonrules"
+activation-group "ServiceName"
+when
+	PortInfo:PortInformation(serviceValue =="Ethernet" && ethernetValue==true && serviceAreaValue=="National" && serviceActivitySelectedValue=="AVPN" && serviceNameValue == null)
+	then 
+		PortInfo.setServiceNameValue("NB-IPVPN");
+		PortInfo.setServiceNameisUpdatable(false);
+		PortInfo.setServiceNameisRequired(false);
+end
+rule "Service Name2"
+ruleflow-group "commonrules"
+activation-group "ServiceName"
 when
 	PortInfo:PortInformation(serviceNameValue == null)
 	then 
-		PortInfo.setServiceNameValue("NB-IPVPN");
+		PortInfo.setServiceNameValue(null);
+		PortInfo.setServiceNameisUpdatable(false);
+		PortInfo.setServiceNameisRequired(false);
+end
+
+rule "Service Name3"
+ruleflow-group "commonrules-optewan"
+activation-group "ServiceName"
+when
+	PortInfo:PortInformation(serviceValue =="Ethernet" && ethernetValue==true && serviceAreaValue=="National" && serviceActivitySelectedValue=="AVPN" && serviceNameValue == null)
+	then 
+		PortInfo.setServiceNameValue("OPTEWAN");
+		PortInfo.setServiceNameisUpdatable(false);
+		PortInfo.setServiceNameisRequired(false);
+end
+
+rule "Service Name4"
+ruleflow-group "commonrules-optewan"
+activation-group "ServiceName"
+when
+	PortInfo:PortInformation(serviceNameValue == null)
+	then 
+		PortInfo.setServiceNameValue(null);
 		PortInfo.setServiceNameisUpdatable(false);
 		PortInfo.setServiceNameisRequired(false);
 end

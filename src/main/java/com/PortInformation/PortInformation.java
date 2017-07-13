@@ -50,7 +50,7 @@ public class PortInformation {
 	public boolean serviceAreaIsRequired;
 	public boolean serviceAreaIsSelected;
 	public boolean serviceAreaIsDisplayed;
-	public boolean etherNetAreaValue;
+	public boolean ethernetValue;
 	public boolean ethernetIsUpdatable;
 	public boolean ethernetIsRequired;
 	public boolean ethernetIsSelected;
@@ -209,8 +209,8 @@ public class PortInformation {
 	public boolean isServiceAreaIsDisplayed() {
 		return serviceAreaIsDisplayed;
 	}
-	public boolean getEtherNetAreaValue() {
-		return etherNetAreaValue;
+	public boolean getEthernetValue() {
+		return ethernetValue;
 	}
 	public boolean isEthernetIsUpdatable() {
 		return ethernetIsUpdatable;
@@ -291,7 +291,7 @@ public class PortInformation {
 		this.serviceAreaIsDisplayed = serviceAreaIsDisplayed;
 	}
 	public void setEtherNetAreaValue(boolean etherNetAreaValue) {
-		this.etherNetAreaValue = etherNetAreaValue;
+		this.ethernetValue = etherNetAreaValue;
 	}
 	public void setEthernetIsUpdatable(boolean ethernetIsUpdatable) {
 		this.ethernetIsUpdatable = ethernetIsUpdatable;
