@@ -31,7 +31,7 @@ ruleflow-group "commonrules"
     when
         PortInfo:PortInformation(ethernetValue==null)
     then
-        PortInfo.setNativeIpValue("National");
+        PortInfo.setEthernetValue("National");
         PortInfo.setNativeIpIsUpdatable(true);
         PortInfo.setNativeIPIsRequired(true);
 end
